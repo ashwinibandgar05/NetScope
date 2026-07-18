@@ -2,8 +2,19 @@
 
 A real-time network packet analyzer and security dashboard. NetScope captures live traffic from a local network interface, parses it, flags suspicious behavior with lightweight heuristics, and streams everything to a browser dashboard over WebSockets — a compact, self-hosted alternative to running Wireshark alongside a separate analytics tool.
 
-![NetScope Dashboard](frontend/assets/screenshots/dashboard-placeholder.png)
-*(Screenshot placeholder — replace with an actual capture once you run it locally)*
+![NetScope Dashboard]("C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 171942.png")
+## Live Demo Screenshots
+
+<p align="center">
+  <img src="sC:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 171942.png" width="48%">
+  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172002.png" width="48%">
+</p>
+
+<p align="center">
+  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172020.png" width="48%">
+  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172034.png" width="48%">
+  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172047.png" width="48%">
+</p>
 
 ---
 
