@@ -1,0 +1,142 @@
+/* ==========================================================================
+   NetScope — Dashboard-specific layout tweaks
+   ========================================================================== */
+
+.chart-card {
+  padding: 18px 20px;
+  height: 320px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-canvas-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.donut-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--text-secondary);
+}
+
+.legend-swatch {
+  width: 9px;
+  height: 9px;
+  border-radius: 3px;
+}
+
+.top-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.top-list-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+}
+
+.top-list-rank {
+  width: 18px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+}
+
+.top-list-label {
+  flex: 1;
+  font-family: var(--font-mono);
+  color: var(--text-primary);
+}
+
+.top-list-bar-track {
+  flex: 1.4;
+  height: 6px;
+  background: var(--bg-elevated);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.top-list-bar-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width var(--transition-base);
+}
+
+.top-list-count {
+  width: 42px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+}
+
+/* ---------- Keyboard shortcuts overlay ---------- */
+
+.shortcuts-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 70;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcuts-overlay.open {
+  display: flex;
+}
+
+.shortcuts-panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  padding: 22px 26px;
+  width: 340px;
+}
+
+.shortcut-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+kbd {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-primary);
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: 68px 1fr;
+  }
+  .sidebar .brand-text,
+  .sidebar .nav-item span,
+  .nav-section-label,
+  .sidebar-footer {
+    display: none;
+  }
+  .nav-item {
+    justify-content: center;
+  }
+}

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NetScope — Network Packet Analyzer</title>
+<link rel="stylesheet" href="css/base.css" />
+<link rel="stylesheet" href="css/layout.css" />
+<link rel="stylesheet" href="css/components.css" />
+<link rel="stylesheet" href="css/dashboard.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.3/chart.umd.min.js"></script>
+<script>
+  // Fallback in case cdnjs is blocked (corporate firewall, ad blocker, etc.)
+  // — try jsDelivr instead so charts don't silently stay disabled.
+  if (typeof Chart === "undefined") {
+    document.write('<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"><\/script>');
+  }
+</script>
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="logo-mark">NS</div>
+      <div class="brand-text">
+        <span class="brand-name">NetScope</span>
+        <span class="brand-sub">Packet Analyzer</span>
+      </div>
+    </div>
+
+    <div class="nav-section-label">Monitor</div>
+    <ul class="nav-list">
+      <li class="nav-item active" data-view="dashboard">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        <span>Dashboard</span>
+      </li>
+      <li class="nav-item" data-view="analyzer">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h4l3 8 4-16 3 8h4"/></svg>
+        <span>Packet Analyzer</span>
+      </li>
+      <li class="nav-item" data-view="alerts">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>
+        <span>Alerts</span>
+        <span class="nav-badge hidden" id="alert-badge">0</span>
+      </li>
+    </ul>
+
+    <div class="nav-section-label">Manage</div>
+    <ul class="nav-list">
+      <li class="nav-item" data-view="history">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v5h5"/><path d="M3.05 13A9 9 0 1 0 6 5.3L3 8"/><path d="M12 7v5l4 2"/></svg>
+        <span>History</span>
+      </li>
+      <li class="nav-item" data-view="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+        <span>Settings</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      NetScope v1.0.0<br />
+      <span id="sidebar-session-info">No active session</span>
+    </div>
+  </aside>
+
+  <!-- ============ TOPBAR ============ -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="page-title" id="page-title">Dashboard</span>
+      <button class="capture-toggle" id="capture-toggle">
+        <span class="dot"></span>
+        <span id="capture-toggle-label">Start Capture</span>
+      </button>
+    </div>
+    <div class="topbar-right">
+      <div class="connection-status" id="connection-status">
+        <span class="status-dot"></span>
+        <span id="connection-status-label">Disconnected</span>
+      </div>
+      <span class="clock" id="clock">--:--:--</span>
+      <button class="icon-btn" id="shortcuts-btn" title="Keyboard shortcuts (?)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h12"/></svg>
+      </button>
+      <div class="avatar" title="Ashwini">A</div>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main-content">
+
+    <!-- ---------- DASHBOARD VIEW ---------- -->
+    <section class="view active" id="view-dashboard">
+      <div class="stats-grid" id="stats-grid">
+        <!-- populated by dashboard.js -->
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card chart-card">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Live Throughput</div>
+              <div class="panel-subtitle">Packets per second</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap"><canvas id="throughput-chart"></canvas></div>
+        </div>
+
+        <div class="card chart-card">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Protocol Distribution</div>
+              <div class="panel-subtitle">Share of captured traffic</div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrap"><canvas id="protocol-donut-chart"></canvas></div>
+          <div class="donut-legend" id="protocol-legend"></div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Top Source IPs</div>
+              <div class="panel-subtitle">Most active senders this capture</div>
+            </div>
+          </div>
+          <div class="top-list" id="top-source-list"></div>
+        </div>
+
+        <div class="card panel">
+          <div class="panel-header">
+            <div>
+              <div class="panel-title">Most Active Ports</div>
+              <div class="panel-subtitle">Destination ports by volume</div>
+            </div>
+          </div>
+          <div class="top-list" id="top-ports-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- PACKET ANALYZER VIEW ---------- -->
+    <section class="view" id="view-analyzer">
+      <div class="card panel">
+        <div class="filter-bar">
+          <input type="text" class="search-input" id="packet-search" placeholder="Search by IP, port, or summary...  (press / to focus)" />
+          <select class="select-input" id="protocol-filter">
+            <option value="">All Protocols</option>
+            <option value="TCP">TCP</option>
+            <option value="UDP">UDP</option>
+            <option value="ICMP">ICMP</option>
+            <option value="ARP">ARP</option>
+          </select>
+          <button class="btn" id="export-csv-btn">Export CSV</button>
+          <button class="btn" id="export-json-btn">Export JSON</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table" id="packet-table">
+            <thead>
+              <tr>
+                <th data-sort="timestamp" class="sorted">Time</th>
+                <th data-sort="src_ip">Source IP</th>
+                <th data-sort="dst_ip">Destination IP</th>
+                <th data-sort="protocol">Protocol</th>
+                <th>App</th>
+                <th data-sort="length">Length</th>
+                <th data-sort="ttl">TTL</th>
+                <th>Flags</th>
+              </tr>
+            </thead>
+            <tbody id="packet-table-body"></tbody>
+          </table>
+        </div>
+
+        <div class="pagination">
+          <span id="pagination-info">0 packets</span>
+          <div class="pagination-controls">
+            <button class="btn btn-sm" id="prev-page-btn">Prev</button>
+            <button class="btn btn-sm" id="next-page-btn">Next</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ---------- ALERTS VIEW ---------- -->
+    <section class="view" id="view-alerts">
+      <div class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Security Alerts</div>
+            <div class="panel-subtitle">Suspicious traffic detected during capture</div>
+          </div>
+          <button class="btn btn-sm" id="clear-alerts-btn">Mark all read</button>
+        </div>
+        <div id="alerts-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- HISTORY VIEW ---------- -->
+    <section class="view" id="view-history">
+      <div class="card panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Capture History</div>
+            <div class="panel-subtitle">Previous capture sessions stored in SQLite</div>
+          </div>
+        </div>
+        <div id="history-list"></div>
+      </div>
+    </section>
+
+    <!-- ---------- SETTINGS VIEW ---------- -->
+    <section class="view" id="view-settings">
+      <div class="card panel" style="max-width:520px;">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Capture Settings</div>
+            <div class="panel-subtitle">Configure interface and detection behavior</div>
+          </div>
+        </div>
+        <div class="settings-group">
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-label">Dark mode</div>
+              <div class="settings-row-desc">NetScope is dark-theme only, by design</div>
+            </div>
+            <div class="toggle on" id="dark-mode-toggle"></div>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-label">Capture interface</div>
+              <div class="settings-row-desc">Network interface to sniff packets from</div>
+            </div>
+            <select class="select-input" id="interface-select"></select>
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-label">Refresh rate</div>
+              <div class="settings-row-desc">Dashboard polling interval (ms)</div>
+            </div>
+            <input type="number" class="number-input" id="refresh-rate-input" value="1000" step="250" />
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-label">In-memory packet limit</div>
+              <div class="settings-row-desc">Max packets buffered for live view</div>
+            </div>
+            <input type="number" class="number-input" id="packet-limit-input" value="5000" step="500" />
+          </div>
+          <div class="settings-row">
+            <div>
+              <div class="settings-row-label">Notification sounds</div>
+              <div class="settings-row-desc">Play a tone when a high-severity alert fires</div>
+            </div>
+            <div class="toggle" id="sound-toggle"></div>
+          </div>
+          <button class="btn btn-primary" id="save-settings-btn" style="align-self:flex-start;">Save Settings</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ============ PACKET DETAIL SIDE PANEL ============ -->
+<div class="side-panel-overlay" id="side-panel-overlay"></div>
+<aside class="side-panel" id="side-panel">
+  <div class="side-panel-header">
+    <span class="panel-title">Packet Details</span>
+    <button class="icon-btn" id="close-panel-btn">✕</button>
+  </div>
+  <div id="side-panel-content"></div>
+</aside>
+
+<!-- ============ KEYBOARD SHORTCUTS OVERLAY ============ -->
+<div class="shortcuts-overlay" id="shortcuts-overlay">
+  <div class="shortcuts-panel">
+    <div class="panel-title" style="margin-bottom:10px;">Keyboard Shortcuts</div>
+    <div class="shortcut-row"><span>Focus search</span><kbd>/</kbd></div>
+    <div class="shortcut-row"><span>Start / stop capture</span><kbd>C</kbd></div>
+    <div class="shortcut-row"><span>Go to Dashboard</span><kbd>1</kbd></div>
+    <div class="shortcut-row"><span>Go to Analyzer</span><kbd>2</kbd></div>
+    <div class="shortcut-row"><span>Go to Alerts</span><kbd>3</kbd></div>
+    <div class="shortcut-row"><span>Close panel</span><kbd>Esc</kbd></div>
+    <div class="shortcut-row"><span>Show this menu</span><kbd>?</kbd></div>
+  </div>
+</div>
+
+<!-- ============ TOASTS ============ -->
+<div class="toast-stack" id="toast-stack"></div>
+
+<script src="js/utils.js"></script>
+<script src="js/api.js"></script>
+<script src="js/websocket.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/packetTable.js"></script>
+<script src="js/alerts.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
