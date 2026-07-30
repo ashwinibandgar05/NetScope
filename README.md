@@ -3,17 +3,21 @@
 A real-time network packet analyzer and security dashboard. NetScope captures live traffic from a local network interface, parses it, flags suspicious behavior with lightweight heuristics, and streams everything to a browser dashboard over WebSockets — a compact, self-hosted alternative to running Wireshark alongside a separate analytics tool.
 
 ![NetScope Dashboard]("C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 171942.png")
-## Live Demo Screenshots
+## 📸 Live Demo Screenshots
 
 <p align="center">
-  <img src="sC:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 171942.png" width="48%">
-  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172002.png" width="48%">
+  <img src="frontend/assets/screenshots/dashboard.png" width="48%" alt="Dashboard">
+  <img src="frontend/assets/screenshots/packet-analyzer.png" width="48%" alt="Packet Analyzer">
 </p>
 
 <p align="center">
-  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172020.png" width="48%">
-  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172034.png" width="48%">
-  <img src="C:\Users\ashwi\OneDrive\Documents\OneDrive\Pictures\Screenshots 1\Screenshot 2026-07-18 172047.png" width="48%">
+  <img src="frontend/assets/screenshots/alerts.png" width="48%" alt="Alerts">
+  <img src="frontend/assets/screenshots/history.png" width="48%" alt="History">
+</p>
+
+<p align="center">
+  <img src="frontend/assets/screenshots/settings.png" width="48%" alt="Settings">
+  <img src="frontend/assets/screenshots/packet-detail.png" width="48%" alt="Packet Detail">
 </p>
 
 ---
